@@ -7,6 +7,8 @@ const app = express();
 let bodyParser = require('body-parser');
 const dns = require('node:dns');
 
+let urls = [];
+
 // Basic Configuration
 const port = process.env.PORT || 3000;
 
@@ -26,21 +28,22 @@ app.get('/api/hello', function(req, res) {
 app.use('/api/shorturl', bodyParser.urlencoded({extended: false}));
 
 app.post('/api/shorturl', (req, res) => {
-  // get hostname by removing https?:// and subdirectories from input url
+  // get hostname by removing https?:// from input url
   let hostname = req.body.url.match(/(?:https?:\/\/)?([^\/]*)/)[1] || "";
   dns.lookup(hostname, (err, addr) => {
     if (err) {
       res.json({error: 'invalid url'});
     } else {
       res.json({
-        original_url: req.body.url
+        original_url: req.body.url,
+        short_url: urls.push(req.body.url) - 1
       })
     }
   })
 })
 
 app.get('/api/shorturl/:url', (req, res) => {
-
+  res.json({urls: urls});
 })
 
 app.listen(port, function() {
