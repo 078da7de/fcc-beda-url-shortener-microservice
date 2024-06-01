@@ -26,8 +26,8 @@ app.get('/api/hello', function(req, res) {
 app.use('/api/shorturl', bodyParser.urlencoded({extended: false}));
 
 app.post('/api/shorturl', (req, res) => {
-  // get hostname by removing https?:// from input url
-  let hostname = req.body.url.match(/(?:https?:\/\/)?(.*)/)[1] || "";
+  // get hostname by removing https?:// and subdirectories from input url
+  let hostname = req.body.url.match(/(?:https?:\/\/)?([^\/]*)/)[1] || "";
   dns.lookup(hostname, (err, addr) => {
     if (err) {
       res.json({error: 'invalid url'});
