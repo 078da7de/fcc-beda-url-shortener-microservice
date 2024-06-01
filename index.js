@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const app = express();
+let bodyParser = require('body-parser');
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
@@ -19,8 +20,10 @@ app.get('/api/hello', function(req, res) {
   res.json({ greeting: 'hello API' });
 });
 
-app.post('/api/shorturl', (req, res) => {
+app.use('/api/shorturl', bodyParser.urlencoded({extended: false}));
 
+app.post('/api/shorturl', (req, res) => {
+  res.json({body: req.body});
 })
 
 app.get('/api/shorturl/:url', (req, res) => {
